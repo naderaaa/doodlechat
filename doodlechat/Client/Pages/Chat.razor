@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Components;
+@using Microsoft.JSInterop;
+@using System;
+@using System.Threading.Tasks;
+
+@page "/chat"
+
+<PageTitle>Chat</PageTitle>
+
+<h3>Chat</h3>
+
+<input type="text" @bind="textBoxValue" />
+
+<p>You entered: @textBoxValue</p>
+
+<canvas id="myCanvas" @ref="canvasRef" width="500" height="300"></canvas>
+
+@code {
+
+    private string textBoxValue;
+    private ElementReference canvasRef;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            InitializeCanvas();
+        }
+    }
+
+    private void InitializeCanvas()
+    {
+        var canvas = canvasRef;
+
+        canvas.LineWidth = 2;
+        canvas.StrokeStyle = "black";
+
+        canvas.MouseDown += OnMouseDown;
+        canvas.MouseMove += OnMouseMove;
+        canvas.MouseUp += OnMouseUp;
+    }
+
+    private bool isDrawing = false;
+
+    private void OnMouseDown(MouseEventArgs e)
+    {
+        isDrawing = true;
+        Draw(e.ClientX, e.ClientY);
+    }
+
+    private void OnMouseMove(MouseEventArgs e)
+    {
+        if (isDrawing)
+        {
+            Draw(e.ClientX, e.ClientY);
+        }
+    }
+
+    private void OnMouseUp(MouseEventArgs e)
+    {
+        isDrawing = false;
+    }
+
+    private void Draw(double x, double y)
+    {
+        var canvas = canvasRef.;
+        canvas.BeginPath();
+        canvas.Arc(x, y, 3, 0, 2 * Math.PI);
+        canvas.Fill();
+        canvas.Stroke();
+    }
+}
